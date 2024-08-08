@@ -12,6 +12,14 @@ const Login2 = () => {
       <Box
         sx={{
           position: "relative",
+          minHeight: "100vh",
+          width: "100%",
+          overflowY: "auto",
+          overflowX: "hidden",
+          display: "flex",
+          alignItems: "center", 
+          justifyContent: "center", 
+
           "&:before": {
             content: '""',
             background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
@@ -28,25 +36,28 @@ const Login2 = () => {
           container
           spacing={0}
           justifyContent="center"
-          sx={{ height: "100vh" }}
+          alignItems="center"
+          sx={{ height: "100%" }}
         >
           <Grid
             item
-            xs={12}
-            sm={12}
-            lg={4}
-            xl={3}
+            xs={6}
+            sm={6}
+            lg={6}
+            xl={6}
             display="flex"
+            flexDirection="column"
             justifyContent="center"
             alignItems="center"
           >
+            <Box display="flex" alignItems="center" justifyContent="center">
+                <Logo />
+            </Box>
+
             <Card
               elevation={9}
               sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
             >
-              <Box display="flex" alignItems="center" justifyContent="center">
-                <Logo />
-              </Box>
               <AuthLogin
                 subtext={
                   <Typography
@@ -55,7 +66,7 @@ const Login2 = () => {
                     color="textSecondary"
                     mb={1}
                   >
-                    Your Social Campaigns
+                    Review24
                   </Typography>
                 }
                 subtitle={
@@ -70,7 +81,7 @@ const Login2 = () => {
                       variant="h6"
                       fontWeight="500"
                     >
-                      New to Modernize?
+                      아직 계정이 없으신가요?
                     </Typography>
                     <Typography
                       component={Link}
@@ -81,7 +92,7 @@ const Login2 = () => {
                         color: "primary.main",
                       }}
                     >
-                      Create an account
+                      회원가입
                     </Typography>
                   </Stack>
                 }
