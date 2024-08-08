@@ -9,8 +9,9 @@ import {
   Checkbox,
 } from "@mui/material";
 import Link from "next/link";
-
+import Image from "next/image";
 import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
+import { BorderTop } from "@mui/icons-material";
 
 interface loginType {
   title?: string;
@@ -34,10 +35,10 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
           variant="subtitle1"
           fontWeight={600}
           component="label"
-          htmlFor="username"
+          htmlFor="email"
           mb="5px"
         >
-          Username
+          Email
         </Typography>
         <CustomTextField variant="outlined" fullWidth />
       </Box>
@@ -59,12 +60,6 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         alignItems="center"
         my={2}
       >
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Remeber this Device"
-          />
-        </FormGroup>
         <Typography
           component={Link}
           href="/"
@@ -74,7 +69,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
             color: "primary.main",
           }}
         >
-          Forgot Password ?
+          아이디/비밀번호 찾기
         </Typography>
       </Stack>
     </Stack>
@@ -88,8 +83,18 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         href="/"
         type="submit"
       >
-        Sign In
+        로그인
       </Button>
+    </Box>
+    <Box
+     mt={3}
+     pt={3} 
+     borderTop="1px solid #b4b4b4"
+     display="flex"
+     justifyContent="space-evenly"
+     >
+      <Image src="/images/socials/kakao_login_medium_narrow.png" alt={"KakaoLoginBtn"} width={200} height={40}/>
+      <Image src="/images/socials/naver_login_btn.png" alt={"NaverLoginBtn"} width={200} height={40}/>
     </Box>
     {subtitle}
   </>
