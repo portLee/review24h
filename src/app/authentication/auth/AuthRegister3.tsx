@@ -43,7 +43,7 @@ const AuthRegister3 = ({ title, subtitle, subtext, handleNext, handleChange, han
                     이전
                 </Button>
                 <Button color="primary" variant="contained" size="large" fullWidth onClick={handleNext}>
-                    다음
+                    회원가입 완료
                 </Button>
             </Box>
         </Box>
