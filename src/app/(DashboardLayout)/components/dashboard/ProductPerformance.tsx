@@ -6,51 +6,60 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    TextField,
+    Button,
     Chip
 } from '@mui/material';
+import { StarRounded } from '@mui/icons-material';
 import DashboardCard from '@/app/(DashboardLayout)//components/shared/DashboardCard';
+import { useState, useEffect } from 'react';
 
-const products = [
-    {
-        id: "1",
-        name: "Sunil Joshi",
-        post: "Web Designer",
-        pname: "Elite Admin",
-        priority: "Low",
-        pbg: "primary.main",
-        budget: "3.9",
-    },
-    {
-        id: "2",
-        name: "Andrew McDownland",
-        post: "Project Manager",
-        pname: "Real Homes WP Theme",
-        priority: "Medium",
-        pbg: "secondary.main",
-        budget: "24.5",
-    },
-    {
-        id: "3",
-        name: "Christopher Jamil",
-        post: "Project Manager",
-        pname: "MedicalPro WP Theme",
-        priority: "High",
-        pbg: "error.main",
-        budget: "12.8",
-    },
-    {
-        id: "4",
-        name: "Nirav Joshi",
-        post: "Frontend Engineer",
-        pname: "Hosting Press HTML",
-        priority: "Critical",
-        pbg: "success.main",
-        budget: "2.4",
-    },
-];
+const URL = 'http://localhost:3000/api/reviews';
 
+const formatDate = (id: string): string => {
+    const year = id.slice(0, 4);
+    const month = id.slice(4, 6);
+    const day = id.slice(6, 8);
+    return `${year}-${month}-${day}`;
+}
+
+const StarRating = (rating: number) => {
+    const totalStars = 5;
+    return (
+        <Box sx={{ display: 'flex' }}>
+            {[...Array(totalStars)].map((_, index) => (
+                    <StarRounded key={index} style={ index < rating ? { color: 'gold' } : {color: 'lightGray'}} />
+            ))}
+        </Box>
+    );
+};
 
 const ProductPerformance = () => {
+    const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                const response = await fetch(URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const json = await response.json();
+                setReviews(json);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReviews();
+    }, []);
+
+    console.log(reviews);
+
     return (
 
         <DashboardCard title="Product Performance">
@@ -66,45 +75,53 @@ const ProductPerformance = () => {
                         <TableRow>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Id
+                                    번호
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Assigned
+                                    작성자
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Name
+                                    작성일자
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Priority
+                                    리뷰내용
                                 </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Budget
+                                    답글
                                 </Typography>
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {products.map((product) => (
-                            <TableRow key={product.name}>
-                                <TableCell>
+                        {reviews.map((review, index) => (
+                            <TableRow key={review.id}>
+                                <TableCell 
+                                    sx={{
+                                        verticalAlign: 'top'
+                                    }}
+                                >
                                     <Typography
                                         sx={{
                                             fontSize: "15px",
                                             fontWeight: "500",
                                         }}
                                     >
-                                        {product.id}
+                                        {index + 1}
                                     </Typography>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell
+                                    sx={{
+                                        verticalAlign: 'top'
+                                    }}
+                                >
                                     <Box
                                         sx={{
                                             display: "flex",
@@ -113,37 +130,68 @@ const ProductPerformance = () => {
                                     >
                                         <Box>
                                             <Typography variant="subtitle2" fontWeight={600}>
-                                                {product.name}
+                                                {review.memberNickname}
                                             </Typography>
                                             <Typography
-                                                color="textSecondary"
                                                 sx={{
                                                     fontSize: "13px",
                                                 }}
                                             >
-                                                {product.post}
+                                                {StarRating(review.rating)}
                                             </Typography>
                                         </Box>
                                     </Box>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell
+                                    sx={{
+                                        verticalAlign: 'top'
+                                    }}
+                                >
                                     <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                        {product.pname}
+                                        {formatDate(review.id.toString())}
                                     </Typography>
                                 </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        sx={{
-                                            px: "4px",
-                                            backgroundColor: product.pbg,
-                                            color: "#fff",
+                                <TableCell
+                                    sx={{
+                                        verticalAlign: 'top',
+                                        width: '50%'
+                                    }}
+                                >
+                                    <Typography 
+                                        color="textSecondary" 
+                                        variant="subtitle2" 
+                                        sx={{ 
+                                            fontSize: '15px',
+                                            fontWeight: '500',
+                                            whiteSpace: 'pre-line', 
                                         }}
-                                        size="small"
-                                        label={product.priority}
-                                    ></Chip>
+                                    >
+                                        {review.contents}
+                                    </Typography>
                                 </TableCell>
-                                <TableCell align="right">
-                                    <Typography variant="h6">${product.budget}k</Typography>
+                                <TableCell
+                                    sx={{
+                                        verticalAlign: 'top',
+                                        width: '50%'
+                                    }}
+                                >
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                        <TextField
+                                            variant="outlined"
+                                            multiline
+                                            rows={4}
+                                            placeholder="답변을 입력하세요"
+                                            fullWidth
+                                        />
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                                            <Button variant="outlined" color="secondary">
+                                                취소
+                                            </Button>
+                                            <Button variant="contained" color="primary">
+                                                등록
+                                            </Button>
+                                        </Box>
+                                    </Box>
                                 </TableCell>
                             </TableRow>
                         ))}
