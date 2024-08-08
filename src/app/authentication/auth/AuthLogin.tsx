@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState} from "react";
+import { signIn } from 'next-auth/react';
 import {
   Box,
   Typography,
@@ -18,7 +19,30 @@ interface loginType {
   subtext?: JSX.Element | JSX.Element[];
 }
 
-const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
+const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    
+      const response = await signIn("credentials", {
+        email: email,
+        password: password,
+      });
+
+      if(!response){
+        console.log("로그인 요청 실패");
+        return null;
+      }else if(response.error){
+        alert('정보가 일치하지 않습니다.');
+        return;
+      }else{
+        console.log("로그인 성공");
+      }
+  };
+  
+  return(
   <>
     {title ? (
       <Typography fontWeight="700" variant="h2" mb={1}>
@@ -39,7 +63,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         >
           Email
         </Typography>
-        <CustomTextField variant="outlined" fullWidth />
+        <CustomTextField id="email" variant="outlined" fullWidth value={email} onChange={(e) => setEmail(e.target.value)}/>
       </Box>
       <Box mt="25px">
         <Typography
@@ -51,7 +75,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         >
           Password
         </Typography>
-        <CustomTextField type="password" variant="outlined" fullWidth />
+        <CustomTextField id="password" type="password" variant="outlined" fullWidth value={password} onChange={(e) => setPassword(e.target.value)}/>
       </Box>
       <Stack
         justifyContent="space-between"
@@ -78,8 +102,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         variant="contained"
         size="large"
         fullWidth
-        component={Link}
-        href="/"
+        onClick={handleLogin}
         type="submit"
       >
         로그인
@@ -97,6 +120,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
     </Box>
     {subtitle}
   </>
-);
+  );
+};
 
 export default AuthLogin;
