@@ -22,8 +22,8 @@ export default function Register() {
     validPassword: '',
     name: '',
     phone: '',
-    baminId: '',
-    baminPw: '',
+    baminID: '',
+    baminPW: '',
     validBaminPw: '',
   });
 
