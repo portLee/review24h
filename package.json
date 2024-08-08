@@ -16,13 +16,19 @@
     "@mui/icons-material": "5.15.15",
     "@mui/lab": "5.0.0-alpha.170",
     "@mui/material": "5.15.15",
+    "@prisma/client": "^5.18.0",
     "@tabler/icons-react": "2.30.0",
     "@types/node": "20.4.5",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "apexcharts": "3.41.1",
+    "bcrypt": "^5.1.1",
+    "crypto-js": "^4.2.0",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
+    "init": "^0.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "lodash": "4.17.21",
     "next": "14.2.3",
     "next-auth": "^4.24.7",
@@ -33,6 +39,10 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.196"
+    "@types/bcrypt": "^5.0.2",
+    "@types/crypto-js": "^4.2.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/lodash": "4.14.196",
+    "prisma": "^5.18.0"
   }
 }
