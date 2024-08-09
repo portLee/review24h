@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { createRefreshToken, signJwtAccessToken, verifyJwt } from "@/utils/auth/jwt";
 import { jwtDecode } from 'jwt-decode';
 import  createOAuthCookie  from "@/utils/auth/oAuthCookie";
+import { getUserByEmail, getUserByPhone } from "@/services/AuthService";
 
 // NextAuth 설정
 export const  authOption:NextAuthOptions = NextAuth({
@@ -110,15 +111,13 @@ export const  authOption:NextAuthOptions = NextAuth({
         if(account?.provider === 'kakao'){
           console.log("kakao로 로그인");
           // 회원확인
-          const userResult = await pool.query('select * from user where memberId = ?', [profile.kakao_account.email]);
-          const row = userResult[0];
-          console.log("row ? ",row);
+          const phone_number = formatPhoneNumber(profile.kakao_account.phone_number);
+          const userResult = await getUserByPhone(phone_number);
           // 회원가입 실행
-          if(Array.isArray(row) && row.length === 0){ 
+          if(userResult === null){ 
             console.log("회원가입 필요");
-            const phone_number = formatPhoneNumber(profile.kakao_account.phone_number);
             const requestBody = {
-              userId: profile.kakao_account.email,
+              email: profile.kakao_account.email,
               phone: phone_number,
               name: profile.kakao_account.name,
               social: 'kakao',
@@ -127,18 +126,17 @@ export const  authOption:NextAuthOptions = NextAuth({
               // 쿠키생성
               createOAuthCookie(requestBody);
 
-              return '/signUp'; // 회원가입 페이지로 Redirect
+              return '/authentication/register?provider'; // 회원가입 페이지로 Redirect
 
             }catch (error){
               console.log(error);
             }
           }else{
             // 자체 JWT 발행
-            const [userResult] = await pool.query('select mno from user where memberId = ? ', [profile.kakao_account.email]);
-            const mno = userResult[0].mno;
-            console.log("카카오 mno / ", mno);
-            const accessToken = signJwtAccessToken({mno});
-            const refreshToken = createRefreshToken({mno});
+            const userResult = await getUserByPhone(phone_number);
+            const mno = userResult?.mno.toString();
+            const accessToken = signJwtAccessToken({mno: mno});
+            const refreshToken = createRefreshToken({mno: mno});
             const rt_ex = jwtDecode(refreshToken).exp;
             const exp = new Date(rt_ex * 1000);
             
@@ -161,12 +159,12 @@ export const  authOption:NextAuthOptions = NextAuth({
           console.log("naver로 로그인");
           console.log("$$$ profile ? ", profile);
           // 회원확인
-          const userResult = await pool.query('select * from user where memberId = ?', [profile.response.email]);
-          const row = userResult[0];
+          const userResult = await getUserByEmail(profile.response.email);
+          
           // 회원가입 실행
-          if(Array.isArray(row) && row.length === 0){
+          if(userResult === null){
             const requestBody = {
-              userId: profile.response.email,
+              email: profile.response.email,
               phone: profile.response.mobile,
               name: profile.response.name,
               social: 'naver',
@@ -174,17 +172,17 @@ export const  authOption:NextAuthOptions = NextAuth({
             try{
               createOAuthCookie(requestBody);
 
-              return '/signUp';
+              return '/authentication/register?provider';
             }catch(error){
               console.log(error);
             }
           }else{
             // 자체 JWT 발행
-            const [userResult] = await pool.query('select mno from user where memberId = ? ', [profile.response.email]);
-            const mno = userResult[0].mno;
-            console.log("카카오 mno / ", mno);
-            const accessToken = signJwtAccessToken({mno});
-            const refreshToken = createRefreshToken({mno});
+            const userResult = await getUserByEmail(profile.response.email);
+            const mno = userResult?.mno.toString();
+            
+            const accessToken = signJwtAccessToken({mno: mno});
+            const refreshToken = createRefreshToken({mno: mno});
             const rt_ex = jwtDecode(refreshToken).exp;
             const exp = new Date(rt_ex * 1000);
             
@@ -207,6 +205,9 @@ export const  authOption:NextAuthOptions = NextAuth({
       async jwt({token, user, account, profile, trigger, session}){
           // 사용자 정보가 있는 경우 토큰에 추가
           console.log(" $$$ Token ",token);
+          console.log(" $$$ user ",user);
+          
+          console.log(" $$$ profile ",profile);
          
 
           // 새로 발급 받은 액세스토큰 세션 업데이트
@@ -221,7 +222,6 @@ export const  authOption:NextAuthOptions = NextAuth({
 
       async session({session, token}){
 
-        session.user.mno = token.user.mno;
         session.user.accessToken = token.accessToken;
         console.log("$$$ Session : ", session);
         return session;
@@ -229,9 +229,9 @@ export const  authOption:NextAuthOptions = NextAuth({
       
       // 리다이렉트 콜백
       async redirect({url, baseUrl}){
-        if(url.startsWith('/signUp')){
+        if(url.startsWith('/authentcation/register?provider')){
           console.log("회원가입 페이지로 이동 ");
-          return '/signUp';
+          return '/authentcation/register?provider';
         }
         return baseUrl;
       }
