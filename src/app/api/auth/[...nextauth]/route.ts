@@ -213,13 +213,16 @@ export const  authOption:NextAuthOptions = NextAuth({
           if(trigger === 'update' && session.accessToken){
               token.accessToken = session.accessToken
           }
+          
+
 
         return {...token, ...user};
       },
 
       async session({session, token}){
 
-        session.user = token as any;
+        session.user.mno = token.user.mno;
+        session.user.accessToken = token.accessToken;
         console.log("$$$ Session : ", session);
         return session;
       },
