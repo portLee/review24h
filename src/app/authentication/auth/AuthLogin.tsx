@@ -115,8 +115,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
      display="flex"
      justifyContent="space-evenly"
      >
-      <Image src="/images/socials/kakao_login_medium_narrow.png" alt={"KakaoLoginBtn"} width={200} height={40}/>
-      <Image src="/images/socials/naver_login_btn.png" alt={"NaverLoginBtn"} width={200} height={40}/>
+      <Image src="/images/socials/kakao_login_medium_narrow.png" alt={"KakaoLoginBtn"} width={200} height={40} onClick={() => signIn('kakao')} style={{cursor:'pointer'}}/>
+      <Image src="/images/socials/naver_login_btn.png" alt={"NaverLoginBtn"} width={200} height={40} onClick={() => signIn('naver')} style={{cursor:'pointer'}}/>
     </Box>
     {subtitle}
   </>
