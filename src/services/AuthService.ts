@@ -1,6 +1,7 @@
 // 회원가입 로그인 관련 서비스
 import prisma from "../../prisma/client";
 import * as bcrypt from 'bcrypt';
+
 // 회원가입
 export async function signUp(body:any){
     try {
@@ -33,6 +34,7 @@ export async function signUp(body:any){
     }
 }
 
+// 로그인
 export async function signIn(body:any){
     try{
         const email = body.email;
@@ -60,4 +62,17 @@ export async function signIn(body:any){
     } catch(error){
         
     }
+}
+
+// 식별자로 유저찾기
+export async function getUser(mno:number){
+    const user = await prisma.user.findUnique({
+        where: {
+            mno: mno,
+        }
+    })
+
+    const {password, ...userWithoutPass} = user;
+
+    return userWithoutPass;
 }
