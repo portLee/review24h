@@ -3,6 +3,7 @@ import { styled, Container, Box } from "@mui/material";
 import React, { useState } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import { SessionProvider } from "next-auth/react";
 
 
 const MainWrapper = styled("div")(() => ({
@@ -34,6 +35,7 @@ export default function RootLayout({
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   return (
+    <SessionProvider>
     <MainWrapper className="mainwrapper">
       {/* ------------------------------------------- */}
       {/* Sidebar */}
@@ -70,5 +72,6 @@ export default function RootLayout({
         </Container>
       </PageWrapper>
     </MainWrapper>
+    </SessionProvider>
   );
 }
