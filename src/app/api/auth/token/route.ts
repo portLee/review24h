@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { signJwtAccessToken, verifyJwt } from "@/utils/auth/jwt";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
-import { getUser } from "@/services/AuthService";
+import { getUserByMno } from "@/services/AuthService";
 
 
 export async function POST(req:NextRequest) {
@@ -49,7 +49,7 @@ export async function POST(req:NextRequest) {
         return new NextResponse(JSON.stringify({message: "사용자가 일치하지 않습니다."}), {status: 403})
     }
         
-    const user = await getUser(rt_mno);
+    const user = await getUserByMno(rt_mno);
     const newAccessToken = signJwtAccessToken({mno: user.mno});
 
     return NextResponse.json({accessToken: newAccessToken})

@@ -1,15 +1,17 @@
 "use client";
 
 import { LinearProgress, Grid, Box, Card, Typography, Stack } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthRegister1 from "../auth/AuthRegister1";
 import AuthRegister2 from "../auth/AuthRegister2";
 import AuthRegister3 from "../auth/AuthRegister3";
+import { useSearchParams } from "next/navigation";
+
 
 export default function Register() {
-
+  
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     termsAccepted: {
@@ -25,6 +27,7 @@ export default function Register() {
     baminID: '',
     baminPW: '',
     validBaminPw: '',
+    social: 'credentials',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +69,38 @@ export default function Register() {
         return 0;
     }
   };
+
+  const searchParam = useSearchParams();
+  const [isFetched, setIsFetched] = useState(false); // 한 번만 실행하기 위한 상태
+  useEffect(() => {
+    const social = searchParam.has('provider')
+
+    if(social && !isFetched){
+      checkOAuth()
+    }
+  }, [isFetched]);
+
+  async function checkOAuth() {
+    
+    try {
+      const response = await fetch('/api/auth/oAuthSignUp');
+      const data = await response.json();
   
+      if (data === null) {
+        alert('다시 시도해주세요');
+        return '/authentication/login';
+      } else {
+         
+        setStep(3); // object가 존재하면 step을 3으로 설정
+        setIsFetched(true)
+      }
+    } catch (error) {
+      console.error("Error fetching OAuth data:", error);
+    }
+  }
+
+  
+
   return ( 
     <PageContainer title="Register" description="this is Register page">
       
