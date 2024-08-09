@@ -30,6 +30,7 @@ export async function signUp(body:any){
         return true;
     } catch (error) {
         // 에러를 발생시켜 상위로 전달
+        console.error('Error in signUp function:', error); // 오류 로그 추가
        return error as Error
     }
 }
@@ -65,14 +66,49 @@ export async function signIn(body:any){
 }
 
 // 식별자로 유저찾기
-export async function getUser(mno:number){
+export async function getUserByMno(mno:number){
     const user = await prisma.user.findUnique({
         where: {
             mno: mno,
         }
     })
+    if(user !== null){
+        const {password, ...userWithoutPass} = user;
+        return userWithoutPass;
+    }else{
+        return null;
+    }
+    
+}
 
-    const {password, ...userWithoutPass} = user;
+// 이메일로 유저찾기
+export async function getUserByEmail(email:string){
+    const user = await prisma.user.findUnique({
+        where : {
+            email: email,
+        }
+    })
+    if(user !== null){
+        const {password, ...userWithoutPass} = user;
 
-    return userWithoutPass;
+        return userWithoutPass;
+    }else{
+        return null;
+    }
+}
+
+// 전화번호로 유저찾기
+export async function getUserByPhone(phone:string){
+    const user = await prisma.user.findUnique({
+        where : {
+            phone: phone,
+        }
+    })
+    if(user !== null){
+        const {password, ...userWithoutPass} = user;
+
+        return userWithoutPass;
+    }else{
+        return null;
+    }
 }
