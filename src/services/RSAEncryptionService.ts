@@ -22,6 +22,7 @@ export default class RSAEncryptionService {
         this.e = parseInt(e, 16);
     }
 
+    // 공개키를 사용하여 암호화
     private doPublic(x: BigInteger): BigInteger {
         if (this.e === null || this.n === null) {
             throw new Error('Public key is not set.');
