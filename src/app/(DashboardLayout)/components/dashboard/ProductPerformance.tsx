@@ -6,12 +6,13 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    TextField,
     Button,
     Chip
 } from '@mui/material';
 import { StarRounded } from '@mui/icons-material';
 import DashboardCard from '@/app/(DashboardLayout)//components/shared/DashboardCard';
+import CustomTextField from '../forms/theme-elements/CustomTextField';
+import CommentForm from '../../reviews/comment/CommentForm';
 import { useState, useEffect } from 'react';
 
 const URL = 'http://localhost:3000/api/reviews';
@@ -62,7 +63,7 @@ const ProductPerformance = () => {
 
     return (
 
-        <DashboardCard title="Product Performance">
+        <DashboardCard title="리뷰 관리">
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -168,6 +169,30 @@ const ProductPerformance = () => {
                                     >
                                         {review.contents}
                                     </Typography>
+
+                                    {review.menus && review.menus.length > 0 && (
+                                        <Box sx={{ mt: 2 }}>
+                                            <Typography variant="subtitle2" fontWeight={600}>
+                                                주문내역
+                                            </Typography>
+                                            {review.menus.map((menu, index) => (
+                                                <Typography key={index} color="textSecondary" variant="body2">
+                                                    {menu.name} {/* 각 주문 내역 */}
+                                                </Typography>
+                                            ))}
+                                        </Box>
+                                    )}
+
+                                    {review.deliveryReviews && (
+                                        <Box>
+                                            <Typography variant="subtitle2" fontWeight={600}>
+                                                배달리뷰
+                                            </Typography>
+                                            <Typography color="textSecondary" variant="body2">
+                                                {review.deliveryReviews.recommendation} {/* 배달리뷰 */}
+                                            </Typography>
+                                        </Box>
+                                    )}
                                 </TableCell>
                                 <TableCell
                                     sx={{
@@ -175,23 +200,7 @@ const ProductPerformance = () => {
                                         width: '50%'
                                     }}
                                 >
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                        <TextField
-                                            variant="outlined"
-                                            multiline
-                                            rows={4}
-                                            placeholder="답변을 입력하세요"
-                                            fullWidth
-                                        />
-                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                                            <Button variant="outlined" color="secondary">
-                                                취소
-                                            </Button>
-                                            <Button variant="contained" color="primary">
-                                                등록
-                                            </Button>
-                                        </Box>
-                                    </Box>
+                                    <CommentForm id={review.id} />
                                 </TableCell>
                             </TableRow>
                         ))}
