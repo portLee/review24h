@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from 'react';
 import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
@@ -10,6 +11,32 @@ import Blog from '@/app/(DashboardLayout)/components/dashboard/Blog';
 import MonthlyEarnings from '@/app/(DashboardLayout)/components/dashboard/MonthlyEarnings';
 
 const Dashboard = () => {
+
+  // 로그인 테스트용
+  useEffect(() => {
+    const login = async () => {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: '아이디',
+          password: '패스워드'
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Login failed:', response.statusText);
+      } else {
+        const data = await response.json();
+        console.log('Login successful:', data);
+      }
+    };
+
+    login();
+  }, []); // 빈 배열로 설정하여 처음 로드될 때만 실행되도록 함
+
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
       <Box>
