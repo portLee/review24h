@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model BaeminAccount {
+  id Int @id @default(autoincrement()) // 배민계정 고유 ID(PK)
+  baeminId String // 배민 아이디
+  baeminPassword String // 배민 비밀번호
+  owner Owner? // 일대일 관계
+}
+
+model Owner {
+  id Int @id // 사장 고유ID(PK)
+  name String // 사장 이름
+  baeminAccountNo Int @unique // 배민계정 고유 ID(Unique)
+  baeminAccount BaeminAccount @relation(fields: [baeminAccountNo], references: [id]) // 배민 계정과 일대일 관계
+  shops Shop[] // 사장이 소유한 가게들(일대다 관계)
+}
+
+model Shop {
+  id Int @id // 가게 고유 ID(PK)
+  name String // 가게 이름
+  ownerId Int // 사장 고유 ID(FK)
+  serviceTypeCode String // 서비스 종류 코드
+  serviceTypeName String // 서비스 종류 이름
+
+  owner Owner @relation(fields: [ownerId], references: [id])  // 사장과 다대일 관계
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

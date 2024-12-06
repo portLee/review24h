@@ -21,8 +21,8 @@ const Dashboard = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: '아이디',
-          password: '패스워드'
+          id: process.env.USER_ID,
+          password: process.env.PASSWORD
         }),
       });
 

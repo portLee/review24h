@@ -105,9 +105,10 @@ export default class BaeminApiService {
     }
 
     // 가게 정보 조회
-    public async getShopInfo(): Promise<any>{
+    public async getShopInfo(cookie: string): Promise<any>{
         const headers = new Headers({
             ...BASE_HEADERS,
+            "Cookie": cookie,
             "Service-Channel": "SELF_SERVICE_PC"
         });
 
@@ -115,7 +116,7 @@ export default class BaeminApiService {
             headers: headers
         };
 
-        const response = await fetchWithCookies(SHOP_URL, options);
+        const response = await fetchWithCookies(`${SHOP_URL}?shopOwnerNo=202302080172`, options);
         if (!response.ok) {
             throw new Error(`Failed to fetch shop info: ${response.statusText}`);
         }
@@ -170,6 +171,7 @@ export default class BaeminApiService {
 
         console.log(comments);
 
+        // https://self-api.baemin.com/v1/review/shops/14104060/reviews/comments
         const response = await fetchWithCookies(REVIEWS_BASE_URL + '/14104060/reviews/comments', options);
 
         if (!response.ok) {

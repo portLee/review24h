@@ -24,35 +24,35 @@ export async function GET(req: NextRequest) {
     const baeminApiService = BaeminApiService.getInstance();
 
     try {
-        // // 공개키 조회
-        // const { tag, value } = await baeminApiService.getPublic();
-        // console.log('Public Key (n):', tag);
-        // console.log('Public Exponent (e):', value);
+        // 공개키 조회
+        const { tag, value } = await baeminApiService.getPublic();
+        console.log('Public Key (n):', tag);
+        console.log('Public Exponent (e):', value);
 
-        // // 아이디 비밀번호 암호화
-        // rsaEncryptionService.setPublic(tag, value);
-        // const value1 = rsaEncryptionService.encrypt(USER_ID);
-        // const value2 = rsaEncryptionService.encrypt(PASSWORD);
+        // 아이디 비밀번호 암호화
+        rsaEncryptionService.setPublic(tag, value);
+        const value1 = rsaEncryptionService.encrypt(USER_ID);
+        const value2 = rsaEncryptionService.encrypt(PASSWORD);
 
-        // console.log('Encrypted value1:', value1);
-        // console.log('Encrypted value2:', value2);
+        console.log('Encrypted value1:', value1);
+        console.log('Encrypted value2:', value2);
 
-        // const payload = {
-        //     id: USER_ID,
-        //     pw: HARDCODED_PW,
-        //     token: "",
-        //     value1: value1,
-        //     value2: value2
-        // }
+        const payload = {
+            id: USER_ID,
+            pw: HARDCODED_PW,
+            token: "",
+            value1: value1,
+            value2: value2
+        }
 
-        // console.log('Request payload:', payload);
+        console.log('Request payload:', payload);
 
-        // // 배민 로그인
-        // await baeminApiService.login(payload);
+        // 배민 로그인
+        await baeminApiService.login(payload);
 
-        // // 사장님 고유 번호 조회
-        // const shopOwnerNumber = await baeminApiService.getProfile();
-        // console.log(`shopOwnerNumber: ${shopOwnerNumber}`);
+        // 사장님 고유 번호 조회
+        const shopOwnerNumber = await baeminApiService.getProfile();
+        console.log(`shopOwnerNumber: ${shopOwnerNumber}`);
 
         // const data = await baeminApiService.getShopInfo();
         
@@ -68,6 +68,9 @@ export async function GET(req: NextRequest) {
 
         console.log("session: " + JSON.stringify(session));
         console.log("cookie: " + session.cookie);
+
+        const shopInfo = await baeminApiService.getShopInfo(session.cookie);
+        console.log("shop: " + JSON.stringify(shopInfo.content));
 
         const today = new Date();
         const monthAgo = new Date(today);

@@ -12,6 +12,9 @@ export async function POST(req: NextRequest) {
     try {
         const session = await getIronSession<SessionData>(cookies(), sessionOptions);
 
+        // 세션 데이터 확인
+        console.log("Session Data:", session.cookie);
+
         // 요청에서 JSON 데이터 파싱
         const { reviewId, contents } = await req.json();
 
